@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <memory>
+#include <vector>
 
 namespace lr {
     typedef std::uint8_t byte;
@@ -12,15 +13,11 @@ namespace lr {
         int height;
         int width;
         int num_channels;
-        byte *data;
+        std::vector<byte> data;
 
     public:
-        // Create an uninitialized image with unspecified size
-        Image();
-        // Create an uninitialized image with specified size
-        Image(int h, int w, int c);
-        // Create an empty image initialized with value v
-        Image(int h, int w, int c, byte v);
+        // Create empty image
+        Image(int h = 0, int w = 0, int c = 0, byte v = 0);
         // Create an image from a file
         Image(std::string filename);
 
@@ -28,11 +25,8 @@ namespace lr {
         ~Image();
 
         // Define access operators
-        byte& operator() (int row, int col);
-        byte operator() (int row, int col) const;
-
-        byte& operator() (int row, int col, int channel);
-        byte operator() (int row, int col, int channel) const;
+        byte& operator()(int row, int col, int channel);
+        byte operator()(int row, int col, int channel) const;
     };
 }
 
