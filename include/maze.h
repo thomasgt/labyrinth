@@ -5,11 +5,11 @@
 #include <stdint.h>
 
 enum cell_states {
-    CELL_BLOCKED,
+    CELL_WALL,
     CELL_OPEN,
     CELL_PATH,
     CELL_NUM_STATES
-}
+};
 
 
 typedef struct maze {
@@ -18,6 +18,9 @@ typedef struct maze {
     uint8_t **cells;
 } maze_t;
 
-maze_t *new_maze(uint32_t rows, uint32_t cols, uint8_t default_val);
+
+maze_t new_maze(uint32_t rows, uint32_t cols, uint8_t default_val);
 void free_maze(maze_t *maze);
+
+int init_maze_prim(maze_t *maze);
 

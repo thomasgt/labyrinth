@@ -3,6 +3,7 @@
 // Defines maze utilities.
 
 #include "maze.h"
+#include <stdlib.h>
 
 maze_t new_maze(uint32_t rows, uint32_t cols, uint8_t default_val) {
     // Create a maze to return
@@ -24,9 +25,10 @@ maze_t new_maze(uint32_t rows, uint32_t cols, uint8_t default_val) {
     return maze;
 }
 
+
 void free_maze(maze_t *maze) {
     // Free the cells
-    free(maze->cells[0][0]);
+    free(&maze->cells[0][0]);
 
     // Free the row pointers
     free(maze->cells);
@@ -35,4 +37,19 @@ void free_maze(maze_t *maze) {
     maze->n_rows = 0;
     maze->n_cols = 0;
 }
+
+
+int init_maze_prim(maze_t *maze) {
+    // Check the input maze
+    if (!maze) {
+        return 1;
+    } else if (maze.n_rows == 0 || maze.n_cols == 0) {
+        return 1;
+    } else if (!maze.cells) {
+        return 1;
+    }
+    
+    return 0;
+}
+
 
