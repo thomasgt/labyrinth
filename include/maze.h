@@ -19,7 +19,7 @@ typedef struct maze {
 } maze_t;
 
 
-maze_t new_maze(uint32_t rows, uint32_t cols, uint8_t default_val);
+maze_t new_maze(uint32_t rows, uint32_t cols);
 void free_maze(maze_t *maze);
 
 int init_maze_prim(maze_t *maze);
