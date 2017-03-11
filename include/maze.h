@@ -19,8 +19,8 @@ typedef struct maze {
 } maze_t;
 
 
-maze_t new_maze(uint32_t rows, uint32_t cols);
-void free_maze(maze_t *maze);
+maze_t maze_new(uint32_t rows, uint32_t cols);
+void maze_free(maze_t *maze);
 
-int init_maze_prim(maze_t *maze);
+int maze_init_prim(maze_t *maze);
 
