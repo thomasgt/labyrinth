@@ -13,7 +13,7 @@ typedef struct rand_stack {
     uint32_t capacity;
 } rand_stack_t;
 
-rand_stack_t new_rand_stack(uint31_t reserve);
+rand_stack_t new_rand_stack(uint32_t reserve);
 void rand_stack_push(rand_stack_t *rs, uint8_t *val);
 uint8_t *rand_stack_pop(rand_stack_t *rs);
 void free_rand_stack(rand_stack_t *rs);

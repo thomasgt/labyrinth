@@ -2,8 +2,9 @@
 // Implementation of the random stack data structure
 
 #include "rand_stack.h"
+#include <stdlib.h>
 
-rand_stack_t new_rand_stack(uint31_t reserve) {
+rand_stack_t new_rand_stack(uint32_t reserve) {
     rand_stack_t rs;
 
     rs.length = 0;
@@ -34,12 +35,12 @@ void rand_stack_push(rand_stack_t *rs, uint8_t *val) {
 uint8_t *rand_stack_pop(rand_stack_t *rs) {
     // Make sure the data structure exists
     if (!rs) {
-        return;
+        return NULL;
     }
 
     // Make sure there's data to pop
     if (rs->length == 0) {
-        return;
+        return NULL;
     }
 
     // Select a random value
