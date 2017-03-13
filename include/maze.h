@@ -13,13 +13,13 @@ enum cell_states {
 
 
 typedef struct maze {
-    uint32_t n_rows;
-    uint32_t n_cols;
-    uint8_t **cells;
+    int n_rows;
+    int n_cols;
+    int **cells;
 } maze_t;
 
 
-maze_t maze_new(uint32_t rows, uint32_t cols);
+maze_t maze_new(int rows, int cols);
 void maze_free(maze_t *maze);
 
 int maze_init_prim(maze_t *maze);
