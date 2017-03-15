@@ -92,23 +92,25 @@ int maze_init_prim(maze_t *maze) {
     }
 
     // Start with a random cell
-	int row = rand() % maze->n_rows;
-	int col = rand() % maze->n_cols;
+	int row = 2*(rand() % (maze->n_rows/2)) + 1;
+	int col = 2*(rand() % (maze->n_cols/2)) + 1;
+
+	maze->cells[row][col] = CELL_OPEN;
 
 	// Get the neighbours
 	neighbour_list_t nl;
 	nl_populate(&nl, row, col, maze);
 
 	// Put the neighbours into a frontier set
-	frontier_set_t fs = fs_new(maze->n_rows * maze->n_cols / 2);
+	frontier_set_t fs = fs_new(maze->n_rows * maze->n_cols / 16);
 	for (int i = 0; i < nl.length; ++i) {
         fs_add(&fs, nl.frontiers[i]);
 	}
 
-	// Run the algorithm
+	// Explore the frontier
 	frontier_t f;
 	while (fs_get(&fs, &f)) {
-        if (*f.cell == CELL_WALL && *f.wall == CELL_WALL) {
+        if (*f.cell == CELL_WALL) {
             // Turn the frontier and wall into a path
             *f.cell = CELL_OPEN;
             *f.wall = CELL_OPEN;
@@ -119,13 +121,18 @@ int maze_init_prim(maze_t *maze) {
                 fs_add(&fs, nl.frontiers[i]);
             }
         }
-
-        // TODO Print the maze
 	}
 
+	// Deallocate the frontier
+    fs_free(&fs);
 
+	// Add a start point
+	col = 2*(rand() % (maze->n_cols/2)) + 1;
+	maze->cells[0][col] = CELL_OPEN;
 
-	fs_free(&fs);
+	// Add an end point
+    col = 2*(rand() % (maze->n_cols/2)) + 1;
+	maze->cells[maze->n_rows - 1][col] = CELL_OPEN;
 
     return 0;
 }
@@ -142,7 +149,7 @@ frontier_set_t fs_new(int reserve) {
     return fs;
 }
 
-
+// Add a frontier to the set
 void fs_add(frontier_set_t *fs, frontier_t f) {
     // Make sure the data structure exists
     if (!fs) {
@@ -152,12 +159,14 @@ void fs_add(frontier_set_t *fs, frontier_t f) {
     // Make sure there's capacity
     // TODO Implement resizing
     if (fs->length == fs->capacity) {
+        printf("Error! Frontier set too small!\n");
         return;
     }
 
     // Insert the value and increment the index
     fs->frontiers[fs->length++] = f;
 }
+
 
 // Returns the number of frontiers returned (0 or 1)
 int32_t fs_get(frontier_set_t *fs, frontier_t *f) {
@@ -207,16 +216,14 @@ static int nl_populate(neighbour_list_t *nl, int r, int c, maze_t *m) {
     nl->length = 0;
 
     // Make sure the row and column are in bounds
-    if (r < 0 || r >= m->n_rows) {
-        return 0;
-    } else if (c < 0 || c >= m->n_cols) {
+    if (r < 0 || r >= m->n_rows || c < 0 || c >= m->n_cols) {
         return 0;
     }
 
     // Fill in the neighbours
     // North
     if (r - 2 > 0) {
-        if (m->cells[r - 1][c] == CELL_WALL && m->cells[r - 2][c] == CELL_WALL) {
+        if (m->cells[r - 2][c] == CELL_WALL) {
             nl->frontiers[nl->length].wall = &m->cells[r - 1][c];
             nl->frontiers[nl->length].cell_r = r - 2;
             nl->frontiers[nl->length].cell_c = c;
@@ -226,7 +233,7 @@ static int nl_populate(neighbour_list_t *nl, int r, int c, maze_t *m) {
 
     // East
     if (c + 2 < m->n_cols - 1) {
-        if (m->cells[r][c + 1] == CELL_WALL && m->cells[r][c + 2] == CELL_WALL) {
+        if (m->cells[r][c + 2] == CELL_WALL) {
             nl->frontiers[nl->length].wall = &m->cells[r][c + 1];
             nl->frontiers[nl->length].cell_r = r;
             nl->frontiers[nl->length].cell_c = c + 2;
@@ -236,7 +243,7 @@ static int nl_populate(neighbour_list_t *nl, int r, int c, maze_t *m) {
 
     // South
     if (r + 2 < m->n_rows - 1) {
-        if (m->cells[r + 1][c] == CELL_WALL && m->cells[r + 2][c] == CELL_WALL) {
+        if (m->cells[r + 2][c] == CELL_WALL) {
             nl->frontiers[nl->length].wall = &m->cells[r + 1][c];
             nl->frontiers[nl->length].cell_r = r + 2;
             nl->frontiers[nl->length].cell_c = c;
@@ -246,7 +253,7 @@ static int nl_populate(neighbour_list_t *nl, int r, int c, maze_t *m) {
 
     // West
     if (c - 2 > 0) {
-        if (m->cells[r][c - 1] == CELL_WALL && m->cells[r][c - 2] == CELL_WALL) {
+        if (m->cells[r][c - 2] == CELL_WALL) {
             nl->frontiers[nl->length].wall = &m->cells[r][c - 1];
             nl->frontiers[nl->length].cell_r = r;
             nl->frontiers[nl->length].cell_c = c - 2;
